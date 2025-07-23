@@ -17,10 +17,16 @@ while True:
     #1. Find hand Landmarks
     success, img = cap.read()
     img = detector.findHands(img)
-    imList = detector.findPosition(img)
+    lmList = detector.findPosition(img)
     bbox = []
     
     #2. Get the tip of the index and middle fingers
+    if len(lmList)!=0:
+        x1,y1 = lmList[8][1:]
+        x2,y2 = lmList[12][1:]
+        
+        print(x1,y1,x2,y2)
+        
     
     #3. Check which fingers are up
     
