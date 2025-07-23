@@ -46,7 +46,7 @@ while True:
             #6. Smoothen values
     
             #7. Move Mouse
-            autopy.mouse.move(x3,y3)
+            autopy.mouse.move(wScr-x3,y3)
     
     #8. Both Index and middle fingers are up :clicking mode
     
