@@ -55,11 +55,23 @@ while True:
     
          #8. Both Index and middle fingers are up :clicking mode
         if fingers[1]==1 and fingers[2] == 1:
-            length,img,_ = detector.findDistance(8,12,img,lmList)
+            
+            #9. Find distance between fingers
+            length,img,lineInfo = detector.findDistance(8,12,img,lmList)
             print(length)
-    #9. Find distance between fingers
+            
+            #10. Click mouse if distance short
+            if length <40:
+                cv2.circle(img, (lineInfo[4], lineInfo[5]), 
+                           15, (8,255,0), cv2.FILLED)
+                autopy.mouse.click()
+            else:
+                cv2.circle(img, (lineInfo[4], lineInfo[5]), 15, (0, 0, 255), cv2.FILLED)
+            
+            
     
-    #10. Click mouse if distance short
+    
+   
     
     #11. Frame Rate
     cTime = time.time()
