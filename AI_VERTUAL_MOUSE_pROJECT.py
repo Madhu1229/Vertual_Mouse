@@ -10,11 +10,15 @@ cap = cv2.VideoCapture(0)
 cap.set(3,wCam)
 cap.set(4,hCam)
 pTime=0
+detector = htm.HandDetector(maxHands=1)
 
 while True:
     
     #1. Find hand Landmarks
     success, img = cap.read()
+    img = detector.findHands(img)
+    imList = detector.findPosition(img)
+    bbox = []
     
     #2. Get the tip of the index and middle fingers
     
