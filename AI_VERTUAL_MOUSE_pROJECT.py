@@ -53,8 +53,10 @@ while True:
             autopy.mouse.move(wScr-x3,y3)
             cv2.circle(img,(x1,y1), 15, (255, 0, 255),cv2.FILLED)
     
-    #8. Both Index and middle fingers are up :clicking mode
-    
+         #8. Both Index and middle fingers are up :clicking mode
+        if fingers[1]==1 and fingers[2] == 1:
+            length,img,_ = detector.findDistance(8,12,img,lmList)
+            print(length)
     #9. Find distance between fingers
     
     #10. Click mouse if distance short
