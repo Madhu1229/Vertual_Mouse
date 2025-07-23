@@ -5,6 +5,7 @@ import time
 import autopy
 
 wCam, hCam = 640,480
+frameR = 100 #Frame Reduction
 
 cap = cv2.VideoCapture(0)
 cap.set(3,wCam)
@@ -33,6 +34,8 @@ while True:
     #3. Check which fingers are up
         fingers = detector.fingersUp(lmList)
         #print(fingers)
+        cv2.rectangle(img,(frameR,frameR),(wCam-frameR,hCam-frameR),
+                          (255,0,255),2)
         
     
         #4. Only Index Finger :Moving Mode
@@ -40,8 +43,9 @@ while True:
         
     
             #5. Convert coordinates
-            x3 = np.interp(x1, (0,wCam),(0,wScr))
-            y3 = np.interp(y1, (0,hCam),(0,hScr))
+            
+            x3 = np.interp(x1, (frameR,wCam-frameR),(0,wScr))
+            y3 = np.interp(y1, (frameR,hCam-frameR),(0,hScr))
         
             #6. Smoothen values
     
