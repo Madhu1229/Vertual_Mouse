@@ -29,6 +29,9 @@ while True:
         
     
     #3. Check which fingers are up
+        fingers = detector.fingersUp(lmList)
+        print(fingers)
+        
     
     #4. Only Index Finger :Moving Mode
     
