@@ -4,13 +4,19 @@ import HandTrackingModule as htm
 import time
 import autopy
 
+
 wCam, hCam = 640,480
 frameR = 100 #Frame Reduction
+smoothening = 7
+
+pTime=0
+pLocX, pLocY = 0,0
+cLocX, cLocY = 0,0
 
 cap = cv2.VideoCapture(0)
 cap.set(3,wCam)
 cap.set(4,hCam)
-pTime=0
+
 detector = htm.HandDetector(maxHands=1)
 wScr, hScr = autopy.screen.size()
 print(wScr,hScr)
@@ -48,12 +54,15 @@ while True:
             y3 = np.interp(y1, (frameR,hCam-frameR),(0,hScr))
         
             #6. Smoothen values
-    
+            cLocX = pLocX + (x3-pLocX)/smoothening
+            cLocY = pLocY + (y3-pLocY)/smoothening
+            
             #7. Move Mouse
-            autopy.mouse.move(wScr-x3,y3)
+            autopy.mouse.move(wScr- cLocX,cLocY)
             cv2.circle(img,(x1,y1), 15, (255, 0, 255),cv2.FILLED)
-    
-         #8. Both Index and middle fingers are up :clicking mode
+            pLocX, pLocY = cLocX, cLocY
+            
+        #8. Both Index and middle fingers are up :clicking mode
         if fingers[1]==1 and fingers[2] == 1:
             
             #9. Find distance between fingers
