@@ -99,15 +99,19 @@ import HandTrackingModule as htm
 import time
 import autopy
 import pyautogui
+import datetime
 
 wCam, hCam = 640, 480
-frameR = 100  # Bigger frame for detection
+frameR = 100  # Frame Reduction
 smoothening = 7
 
 pTime = 0
 pLocX, pLocY = 0, 0
 cLocX, cLocY = 0, 0
 scrollPrevY = 0
+
+gesture_cooldown = 1.5  # seconds cooldown between screenshots
+last_gesture_time = 0
 
 cap = cv2.VideoCapture(0)
 cap.set(3, wCam)
@@ -130,8 +134,9 @@ while True:
         continue
 
     try:
-        x1, y1 = lmList[8][1:]
-        x2, y2 = lmList[12][1:]
+        x1, y1 = lmList[8][1:]  # Index finger tip
+        x2, y2 = lmList[12][1:] # Middle finger tip
+        xThumb, yThumb = lmList[4][1:]  # Thumb tip
     except:
         continue
 
@@ -139,7 +144,30 @@ while True:
     cv2.rectangle(img, (frameR, frameR), (wCam - frameR, hCam - frameR),
                   (255, 0, 255), 2)
 
-    # Moving mode: Only index finger up
+    current_time = time.time()
+
+    # Take screenshot when ONLY thumb finger is up (cooldown to prevent repeats)
+    if fingers == [1, 0, 0, 0, 0]:
+        cv2.circle(img, (xThumb, yThumb), 15, (0, 255, 255), cv2.FILLED)  # Yellow circle on thumb
+        if current_time - last_gesture_time > gesture_cooldown:
+            screenshot = pyautogui.screenshot()
+            filename = f"screenshot_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+            screenshot.save(filename)
+            print(f"Screenshot saved as {filename}")
+            last_gesture_time = current_time
+
+            # Display screenshot for 2 seconds
+            screenshot_img = cv2.imread(filename)
+            scale_percent = 50
+            width = int(screenshot_img.shape[1] * scale_percent / 100)
+            height = int(screenshot_img.shape[0] * scale_percent / 100)
+            dim = (width, height)
+            resized_img = cv2.resize(screenshot_img, dim, interpolation=cv2.INTER_AREA)
+            cv2.imshow("Screenshot", resized_img)
+            cv2.waitKey(2000)
+            cv2.destroyWindow("Screenshot")
+
+    # Moving mode: Only index finger up (move mouse)
     if fingers[1] == 1 and fingers[2] == 0:
         x3 = np.interp(x1, (frameR, wCam - frameR), (0, wScr))
         y3 = np.interp(y1, (frameR, hCam - frameR), (0, hScr))
@@ -195,3 +223,5 @@ while True:
 
     cv2.imshow("Image", img)
     cv2.waitKey(1)
+
+
