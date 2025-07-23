@@ -47,6 +47,7 @@ while True:
     
             #7. Move Mouse
             autopy.mouse.move(wScr-x3,y3)
+            cv2.circle(img,(x1,y1), 15, (255, 0, 255),cv2.FILLED)
     
     #8. Both Index and middle fingers are up :clicking mode
     
